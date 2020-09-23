@@ -1,5 +1,5 @@
 <server>
-<!-- postgresql -->
+    <!-- Postgresql DS config -->
     <dataSource id="DefaultDataSource"
                 jndiName="jdbc/DefaultDataSource"
                 jdbcDriverRef="postgresql-driver"
@@ -18,7 +18,7 @@
                 javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"
                 javax.sql.DataSource="org.postgresql.ds.PGPoolingDataSource"/>
 
-<!-- non-tx postgresql ds, needed for table create -->
+    <!-- Non-JTA postgresql DS config. Needed for eclipse link table creation -->
     <dataSource id="postgresqlDataSourceNonTx"
                 jndiName="jdbc/DefaultDataSourceNonJTA"
                 jdbcDriverRef="postgresql-driver"
