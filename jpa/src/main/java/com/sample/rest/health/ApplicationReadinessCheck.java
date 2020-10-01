@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.example.app.health;
+package com.example.rest.health;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -32,7 +32,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
  */
 @Readiness
 @ApplicationScoped
-public class DatabaseReadinessCheck implements HealthCheck {
+public class ApplicationReadinessCheck implements HealthCheck {
 
     @Resource
     private DataSource datasource;

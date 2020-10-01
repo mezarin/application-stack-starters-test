@@ -16,31 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.example.app;
+package com.example.rest;
 
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-/**
- * Data Access Object (DAO) for database operations.
- */
-@RequestScoped
-public class DatabaseDAO {
-    @PersistenceContext(unitName = "jpa-unit")
-    EntityManager em;
-
-    public Object create(Object o) {
-        return null;
-    }
-
-    public Object read(Object id) {
-        return null;
-    }
-
-    public void update(Object o) {
-    }
-
-    public void delete(Object o) {
-    }
+@ApplicationPath("/api")
+public class RestApplication extends Application { 
+    
 }

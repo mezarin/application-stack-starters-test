@@ -33,8 +33,6 @@
         <version.maven-war-plugin>3.2.2</version.maven-war-plugin>
         <version.maven-surefire-plugin>3.0.0-M1</version.maven-surefire-plugin>
         <version.maven-failsafe-plugin>3.0.0-M1</version.maven-failsafe-plugin>
-        <http.port>9080</http.port>
-        <https.port>9443</https.port>
         <version.liberty-maven-plugin>3.2</version.liberty-maven-plugin>
     </properties>
 
@@ -52,13 +50,24 @@
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
-        <!-- Tests dependencies -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>8.0.1</version>
+        <dependency>
+		    <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>8.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+        <!-- Database dependencies -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.21</version>
+        </dependency>
+        <!-- Tests dependencies -->
 		<dependency>
 			<groupId>org.microshed</groupId>
 			<artifactId>microshed-testing-liberty</artifactId>
@@ -101,17 +110,12 @@
             <version>1.0.4</version>
             <scope>test</scope>
         </dependency>
-        <!-- Database dependencies -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
-        </dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>4.2.0</version>
+			<scope>test</scope>
+		</dependency>
         <!-- Support for JDK 9 and above -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -138,7 +142,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -154,7 +157,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources</outputDirectory>
+                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/jdbc</outputDirectory>
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                             <excludeTransitive>true</excludeTransitive>
@@ -184,12 +187,9 @@
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>${version.liberty-maven-plugin}</version>
                 <configuration>
+                	<mergeServerEnv>true</mergeServerEnv>
                     <stripVersion>true</stripVersion>
                     <serverStartTimeout>360</serverStartTimeout>
-                    <bootstrapProperties>
-                        <default.http.port>${http.port}</default.http.port>
-                        <default.https.port>${https.port}</default.https.port>
-                    </bootstrapProperties>
                 </configuration>
             </plugin>
             <!-- Unit test plugin -->
