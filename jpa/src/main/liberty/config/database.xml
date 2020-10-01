@@ -1,0 +1,28 @@
+<server>
+  <!-- Datasource definition with global transaction support -->
+  <dataSource id="DefaultDataSource"
+              jndiName="jdbc/DefaultDataSource"
+              jdbcDriverRef="database-driver"
+              type="javax.sql.ConnectionPoolDataSource"
+              transactional="true">
+              <!-- Add the needed database specific properties -->
+  </dataSource>
+
+  <!-- JDBC driver definition. Add database specific jdbc entries -->
+  <jdbcDriver id="database-driver"
+              libraryRef="databaseLib"/>
+
+  <!-- Datasource definition with no global transaction support. Needed for table creation -->
+  <dataSource id="nonJTADataSource"
+              jndiName="jdbc/DefaultDataSourceNonJTA"
+              jdbcDriverRef="database-driver"
+              type="javax.sql.ConnectionPoolDataSource"
+              transactional="false">
+              <!-- Add the needed database specific properties -->
+  </dataSource>
+
+<library id="databaseLib">
+  <fileset dir="${shared.resource.dir}/jdbc" includes="*.jar"/>
+</library>
+
+</server>

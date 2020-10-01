@@ -29,14 +29,8 @@ public class EndpointIT {
 
 	@Container
 	public static ApplicationContainer app = new ApplicationContainer()
-	.withAppContextRoot("/jpa-starter-app")
+	.withAppContextRoot("/")
 	.withReadinessPath("/health/ready");
-    //.withEnv("DB_HOSTNAME",System.getenv("PGCLUSTER_DATABASE")+"."+System.getenv("PGCLUSTER_NAMESPACE"))
-    //.withEnv("DB_PORT", System.getenv("PGCLUSTER_PORT"))
-    //.withEnv("DB_PORT_NUM","5432")
-    //.withEnv("DB_NAME",System.getenv("PGCLUSTER_DATABASE"))
-    //.withEnv("DB_USERNAME", System.getenv("PGCLUSTER_SECRET_USERNAME"))
-	//.withEnv("DB_PASSWORD", System.getenv("PGCLUSTER_SECRET_PASSWORD"));
 
 	/**
 	 * Ping readiness health check.  See samples for more detail.

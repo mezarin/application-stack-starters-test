@@ -1,4 +1,4 @@
-# Postgres Database Setup
+# Postgresql Database and Application Setup
 
 ## Procedure
 
@@ -10,7 +10,7 @@
 oc project pgo
 ```
 
-3. Clone the postgres operator repo and cd into it. 
+3. Clone the postgresql operator repo and cd into it. 
 
 ```
 git clone -b v4.4.1 https://github.com/CrunchyData/postgres-operator.git
@@ -26,7 +26,7 @@ cd postgres-operator
 +    StorageClass:  rook-ceph-block-internal
 ```
 
-5. Create postgress resources.
+5. Create postgresql resources.
 
 ```
 kubectl -n "$PGO_OPERATOR_NAMESPACE" create configmap pgo-config --from-file=./conf/postgres-operator
@@ -58,7 +58,7 @@ export PGO_CLIENT_CERT=/root/.pgo/pgo/client.crt
 export PGO_CLIENT_KEY=/root/.pgo/pgo/client.key
 ```
 
-9. (*)Create a Route for external access to the postgress operator deployment.
+9. (*)Create a Route for external access to the postgresql operator deployment.
 
 For this step follow the instructions on the deployed operator main page. It allows for the creation of a route:
 
@@ -109,9 +109,9 @@ cd jpastarter
 odo create java-openliberty mysboproj --starter
 ```
 
-**TEMPORARY WORKAROUD FOR DEV TEST:**
 
-a. Update devfile.yaml
+
+**TEMPORARY WORKAROUD FOR DEV TEST:** Update devfile.yaml
 
 Update 1: Use the new/dev starter link. The update should look like this:
 
@@ -123,32 +123,76 @@ starterProjects:
         origin: 'https://github.com/mezarin/application-stack-starters-test.git'
 ```
 
-Update 2: (*) The build exec should look like this:
-
-```
-                       echo "will run the devBuild command" && echo "...moving liberty"
-                                                            && mkdir -p /projects/target/liberty
-                                                            && mv /opt/ol/wlp /projects/target/liberty
-                                                            && mvn -Dmaven.repo.local=/mvn/repository package
-                                                            && touch ./.disable-bld-cmd;
-```
-
-Basically move `&& mv /opt/ol/wlp /projects/target/liberty` above the mvn execution
-
-b. Delete all files except for devfile.yaml and run these commands:
+**TEMPORARY WORKAROUD FOR DEV TEST:** Delete all files except for devfile.yaml and run this command:
 
 ```
 odo create myjpa --starter
 ```
+
+For the health check to work, the postgresql database needs to be configured.
+
+- update the src/main/liberty/config/database.xml:
+
+Add the shows properties properties to both datasource definitions. For example:
+
 ```
-odo url list
-Found the following URLs for component mysboproj
-NAME     STATE          URL     PORT     SECURE     KIND
-ep1      Not Pushed     ://     9080     false      route
+  <dataSource id="DefaultDataSource"
+              jndiName="jdbc/DefaultDataSource"
+              jdbcDriverRef="postgresql-driver"
+              type="javax.sql.ConnectionPoolDataSource"
+              transactional="true">
+    <properties serverName="${PGCLUSTER_DATABASE}.${PGCLUSTER_NAMESPACE}"
+                portNumber="${PGCLUSTER_PORT}"
+                databaseName="${PGCLUSTER_DATABASE}"
+                user="${PGCLUSTER_SECRET_USERNAME}"
+                password="${PGCLUSTER_SECRET_PASSWORD}"/>
+  </datasource>
 ```
+Modify the jdbcDriver entry to look like this:
+
+```
+  <jdbcDriver id="postgresql-driver"
+              libraryRef="postgresqlLib"
+              javax.sql.XADataSource="org.postgresql.xa.PGXADataSource"
+              javax.sql.ConnectionPoolDataSource="org.postgresql.ds.PGConnectionPoolDataSource"
+              javax.sql.DataSource="org.postgresql.ds.PGPoolingDataSource"/>
+```
+
+- Add the following dependency to the pom.xml:
+
+Add the postgresql dependency:
+
+```
+    <dependencies>
+    ...
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.1</version>
+        </dependency>
+    ...
+    <dependencies>
+```
+
+Add the following configuration to  plugin maven-dependency-plugin with execution copy-resource-adapter-artifacts:
+
+```
+    <configuration>
+        <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/jdbc</outputDirectory>
+        <overWriteReleases>false</overWriteReleases>
+        <overWriteSnapshots>true</overWriteSnapshots>
+        <excludeTransitive>true</excludeTransitive>
+        <includeTypes>jar</includeTypes>
+        <includeGroupIds>org.postgresql</includeGroupIds>
+    </configuration>
+```
+
+Push the application to the cluster.
+
 ```
 odo push
 ```
+
 ``` 
 odo url list
 Found the following URLs for component mysboproj
@@ -184,7 +228,7 @@ You can see the current status by executing 'odo service list'
 odo push
 ```
 
-Link the application to the Postgres service. This creates an empty secret called: mysboproj-servicebindingrequest-example-servicebindingrequest.
+Link the application to the Postgresql service. This creates an empty secret called: mysboproj-servicebindingrequest-example-servicebindingrequest.
 It is not until you update the actual service CR instance that the DB key/value pairs are created. 
 
 ```

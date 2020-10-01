@@ -51,40 +51,29 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-		    <groupId>jakarta.platform</groupId>
+            <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>8.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-        <!-- Database dependencies -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Tests dependencies -->
-		<dependency>
-			<groupId>org.microshed</groupId>
-			<artifactId>microshed-testing-liberty</artifactId>
-			<version>0.9</version>
-			<scope>test</scope>
+        <dependency>
+            <groupId>org.microshed</groupId>
+            <artifactId>microshed-testing-liberty</artifactId>
+            <version>0.9</version>
+            <scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.29</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.6.0</version>
-			<scope>test</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.29</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -156,14 +145,6 @@
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/liberty/wlp/usr/shared/resources/jdbc</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includeTypes>jar</includeTypes>
-                            <includeGroupIds>mysql,org.postgresql</includeGroupIds>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
